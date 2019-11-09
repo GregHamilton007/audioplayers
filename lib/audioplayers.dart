@@ -287,7 +287,7 @@ class AudioPlayer {
     String method, [
     Map<String, dynamic> arguments,
   ]) {
-    arguments ??= const {};
+    arguments ??= const {}; // if arguments is null set to
 
     final Map<String, dynamic> withPlayerId = Map.of(arguments)
       ..['playerId'] = playerId
@@ -470,6 +470,12 @@ class AudioPlayer {
       {bool isLocal: false, bool respectSilence = false}) {
     return _invokeMethod('setUrl',
         {'url': url, 'isLocal': isLocal, 'respectSilence': respectSilence});
+  }
+
+  Future<int> setUrlWithHeaders(String url,
+      {bool isLocal: false, bool respectSilence = false, Map<String,String> headers} ) {
+    return _invokeMethod('setUrl',
+        {'url': url, 'isLocal': isLocal, 'respectSilence': respectSilence, 'headers': headers});
   }
 
   /// Get audio duration after setting url.

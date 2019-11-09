@@ -100,6 +100,13 @@ public class AudioplayersPlugin implements MethodCallHandler {
                 player.setUrl(url, isLocal);
                 break;
             }
+            case "setUrlWithHeaders": {
+                final String url = call.argument("url");
+                final boolean isLocal = call.argument("isLocal");
+                final HashMap<String,String> headers = call.argument("headers");
+                player.setUrlWithHeaders(context, url, isLocal, headers);
+                break;
+            }
             case "getDuration": {
 
                 response.success(player.getDuration());

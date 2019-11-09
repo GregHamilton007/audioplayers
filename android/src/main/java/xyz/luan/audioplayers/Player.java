@@ -1,6 +1,9 @@
 package xyz.luan.audioplayers;
 
 import android.content.Context;
+
+import java.util.*;
+
 abstract class Player {
 
     protected static boolean objectEquals(Object o1, Object o2) {
@@ -18,6 +21,8 @@ abstract class Player {
     abstract void pause();
 
     abstract void setUrl(String url, boolean isLocal);
+
+    abstract void setUrlWithHeaders(Context context, String url, boolean isLocal, HashMap<String,String> headers);
 
     abstract void setVolume(double volume);
 
