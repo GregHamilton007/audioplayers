@@ -78,7 +78,7 @@ void _backgroundCallbackDispatcher() {
   Function onAudioChangeBackgroundEvent;
 
   // This is where the magic happens and we handle background events from the
-  // native portion of the plugin. Here we message the audio notification data 
+  // native portion of the plugin. Here we message the audio notification data
   // which we then pass to the provided callback.
   _channel.setMethodCallHandler((MethodCall call) async {
     Function _performCallbackLookup() {
@@ -136,7 +136,7 @@ class AudioPlayer {
       StreamController<void>.broadcast();
 
   final StreamController<void> _seekCompleteController =
-  StreamController<void>.broadcast();
+      StreamController<void>.broadcast();
 
   final StreamController<String> _errorController =
       StreamController<String>.broadcast();
@@ -334,13 +334,49 @@ class AudioPlayer {
     respectSilence ??= false;
     stayAwake ??= false;
 
-    final int result = await _invokeMethod('play', {
+    final int result = await _invokeMethod('play', { //TODO this is where it starts playing
       'url': url,
       'isLocal': isLocal,
       'volume': volume,
       'position': position?.inMilliseconds,
       'respectSilence': respectSilence,
       'stayAwake': stayAwake,
+    });
+
+    if (result == 1) {
+      state = AudioPlayerState.PLAYING;
+    }
+
+    return result;
+  }
+
+  /// Plays an audio.
+  ///
+  /// If [isLocal] is true, [url] must be a local file system path.
+  /// If [isLocal] is false, [url] must be a remote URL.
+  Future<int> playWithHeaders(
+    String url, {
+    bool isLocal = false,
+    double volume = 1.0,
+    // position must be null by default to be compatible with radio streams
+    Duration position,
+    bool respectSilence = false,
+    bool stayAwake = false,
+    Map<String, String> headers,
+  }) async {
+    isLocal ??= false;
+    volume ??= 1.0;
+    respectSilence ??= false;
+    stayAwake ??= false;
+
+    final int result = await _invokeMethod('playWithHeaders', {
+      'url': url,
+      'isLocal': isLocal,
+      'volume': volume,
+      'position': position?.inMilliseconds,
+      'respectSilence': respectSilence,
+      'stayAwake': stayAwake,
+      'headers': headers,
     });
 
     if (result == 1) {
@@ -473,9 +509,15 @@ class AudioPlayer {
   }
 
   Future<int> setUrlWithHeaders(String url,
-      {bool isLocal: false, bool respectSilence = false, Map<String,String> headers} ) {
-    return _invokeMethod('setUrlWithHeaders',
-        {'url': url, 'isLocal': isLocal, 'respectSilence': respectSilence, 'headers': headers});
+      {bool isLocal: false,
+      bool respectSilence = false,
+      Map<String, String> headers}) {
+    return _invokeMethod('setUrlWithHeaders', {
+      'url': url,
+      'isLocal': isLocal,
+      'respectSilence': respectSilence,
+      'headers': headers
+    });
   }
 
   /// Get audio duration after setting url.
@@ -568,7 +610,8 @@ class AudioPlayer {
     if (!_durationController.isClosed) futures.add(_durationController.close());
     if (!_completionController.isClosed)
       futures.add(_completionController.close());
-    if (!_seekCompleteController.isClosed) futures.add(_seekCompleteController.close());
+    if (!_seekCompleteController.isClosed)
+      futures.add(_seekCompleteController.close());
     if (!_errorController.isClosed) futures.add(_errorController.close());
 
     await Future.wait(futures);

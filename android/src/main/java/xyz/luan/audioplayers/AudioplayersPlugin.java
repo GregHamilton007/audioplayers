@@ -52,90 +52,105 @@ public class AudioplayersPlugin implements MethodCallHandler {
         final String mode = call.argument("mode");
         final Player player = getPlayer(playerId, mode);
         switch (call.method) {
-            case "play": {
-                final String url = call.argument("url");
-                final double volume = call.argument("volume");
-                final Integer position = call.argument("position");
-                final boolean respectSilence = call.argument("respectSilence");
-                final boolean isLocal = call.argument("isLocal");
-                final boolean stayAwake = call.argument("stayAwake");
-                player.configAttributes(respectSilence, stayAwake, context.getApplicationContext());
-                player.setVolume(volume);
-                player.setUrl(url, isLocal);
-                if (position != null && !mode.equals("PlayerMode.LOW_LATENCY")) {
-                    player.seek(position);
-                }
-                player.play();
-                break;
-            }
-            case "resume": {
-                player.play();
-                break;
-            }
-            case "pause": {
-                player.pause();
-                break;
-            }
-            case "stop": {
-                player.stop();
-                break;
-            }
-            case "release": {
-                player.release();
-                break;
-            }
-            case "seek": {
-                final Integer position = call.argument("position");
+        case "play": {
+            final String url = call.argument("url");
+            final double volume = call.argument("volume");
+            final Integer position = call.argument("position");
+            final boolean respectSilence = call.argument("respectSilence");
+            final boolean isLocal = call.argument("isLocal");
+            final boolean stayAwake = call.argument("stayAwake");
+            player.configAttributes(respectSilence, stayAwake, context.getApplicationContext());
+            player.setVolume(volume);
+            player.setUrl(url, isLocal);
+            if (position != null && !mode.equals("PlayerMode.LOW_LATENCY")) {
                 player.seek(position);
-                break;
             }
-            case "setVolume": {
-                final double volume = call.argument("volume");
-                player.setVolume(volume);
-                break;
+            player.play();
+            break;
+        }
+        case "playWithHeaders": {
+            final String url = call.argument("url");
+            final double volume = call.argument("volume");
+            final Integer position = call.argument("position");
+            final boolean respectSilence = call.argument("respectSilence");
+            final boolean isLocal = call.argument("isLocal");
+            final boolean stayAwake = call.argument("stayAwake");
+            final Map<String, String> headers = call.argument("headers");
+            player.configAttributes(respectSilence, stayAwake, context.getApplicationContext());
+            player.setVolume(volume);
+            player.setUrlWithHeaders(context.getApplicationContext(), url, isLocal, (HashMap<String, String>) headers);
+            if (position != null && !mode.equals("PlayerMode.LOW_LATENCY")) {
+                player.seek(position);
             }
-            case "setUrl": {
-                final String url = call.argument("url");
-                final boolean isLocal = call.argument("isLocal");
-                player.setUrl(url, isLocal);
-                break;
-            }
-            case "setUrlWithHeaders": {
-                final String url = call.argument("url");
-                final boolean isLocal = call.argument("isLocal");
-                final HashMap<String,String> headers = call.argument("headers");
-                player.setUrlWithHeaders(context, url, isLocal, headers);
-                break;
-            }
-            case "getDuration": {
+            player.play();
+            break;
+        }
+        case "resume": {
+            player.play();
+            break;
+        }
+        case "pause": {
+            player.pause();
+            break;
+        }
+        case "stop": {
+            player.stop();
+            break;
+        }
+        case "release": {
+            player.release();
+            break;
+        }
+        case "seek": {
+            final Integer position = call.argument("position");
+            player.seek(position);
+            break;
+        }
+        case "setVolume": {
+            final double volume = call.argument("volume");
+            player.setVolume(volume);
+            break;
+        }
+        case "setUrl": {
+            final String url = call.argument("url");
+            final boolean isLocal = call.argument("isLocal");
+            player.setUrl(url, isLocal);
+            break;
+        }
+        case "setUrlWithHeaders": {
+            final String url = call.argument("url");
+            final boolean isLocal = call.argument("isLocal");
+            final HashMap<String, String> headers = call.argument("headers");
+            player.setUrlWithHeaders(context, url, isLocal, headers);
+            break;
+        }
+        case "getDuration": {
 
-                response.success(player.getDuration());
-                return;
-            }
-            case "getCurrentPosition": {
-                response.success(player.getCurrentPosition());
-                return;
-            }
-            case "setReleaseMode": {
-                final String releaseModeName = call.argument("releaseMode");
-                final ReleaseMode releaseMode = ReleaseMode.valueOf(releaseModeName.substring("ReleaseMode.".length()));
-                player.setReleaseMode(releaseMode);
-                break;
-            }
-            default: {
-                response.notImplemented();
-                return;
-            }
+            response.success(player.getDuration());
+            return;
+        }
+        case "getCurrentPosition": {
+            response.success(player.getCurrentPosition());
+            return;
+        }
+        case "setReleaseMode": {
+            final String releaseModeName = call.argument("releaseMode");
+            final ReleaseMode releaseMode = ReleaseMode.valueOf(releaseModeName.substring("ReleaseMode.".length()));
+            player.setReleaseMode(releaseMode);
+            break;
+        }
+        default: {
+            response.notImplemented();
+            return;
+        }
         }
         response.success(1);
     }
 
     private Player getPlayer(String playerId, String mode) {
         if (!mediaPlayers.containsKey(playerId)) {
-            Player player =
-                    mode.equalsIgnoreCase("PlayerMode.MEDIA_PLAYER") ?
-                            new WrappedMediaPlayer(this, playerId) :
-                            new WrappedSoundPool(this, playerId);
+            Player player = mode.equalsIgnoreCase("PlayerMode.MEDIA_PLAYER") ? new WrappedMediaPlayer(this, playerId)
+                    : new WrappedSoundPool(this, playerId);
             mediaPlayers.put(playerId, player);
         }
         return mediaPlayers.get(playerId);
@@ -184,10 +199,8 @@ public class AudioplayersPlugin implements MethodCallHandler {
         private final WeakReference<Handler> handler;
         private final WeakReference<AudioplayersPlugin> audioplayersPlugin;
 
-        private UpdateCallback(final Map<String, Player> mediaPlayers,
-                               final MethodChannel channel,
-                               final Handler handler,
-                               final AudioplayersPlugin audioplayersPlugin) {
+        private UpdateCallback(final Map<String, Player> mediaPlayers, final MethodChannel channel,
+                final Handler handler, final AudioplayersPlugin audioplayersPlugin) {
             this.mediaPlayers = new WeakReference<>(mediaPlayers);
             this.channel = new WeakReference<>(channel);
             this.handler = new WeakReference<>(handler);
@@ -237,4 +250,3 @@ public class AudioplayersPlugin implements MethodCallHandler {
         }
     }
 }
-

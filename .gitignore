@@ -13,3 +13,4 @@ packages
 .settings
 .vscode
 testing
+flutter_export_environment.sh

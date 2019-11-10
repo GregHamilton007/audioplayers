@@ -15,8 +15,10 @@ typedef void OnError(Exception exception);
 
 const kUrl1 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl2 = 'https://luan.xyz/files/audio/nasa_on_a_mission.mp3';
-const kUrl3 = 'http://traffic.libsyn.com/joeroganexp/p1380.mp3';
-HashMap<String,String> kUrl3headers = new HashMap<String,String>();
+const kUrl3 = 'http://traffic.libsyn.com/billmaher/Overtime_514.mp3';
+//const kUrl3 = 'https://dts.podtrac.com/redirect.mp3/rss.art19.com/episodes/2d05379b-562b-4417-b407-e4e51ad56ffe.mp3';
+
+HashMap<String, String> kUrl3headers = new HashMap<String, String>();
 
 void main() {
   runApp(new MaterialApp(home: new ExampleApp()));
@@ -46,13 +48,14 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   Widget remoteUrl() {
+    kUrl3headers.putIfAbsent("Range", () => "bytes=2000-3000");
     return SingleChildScrollView(
       child: _tab(children: [
         Text(
-          'Sample 1 ($kUrl1)',
+          'Sample 1 ($kUrl3)',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        PlayerWidget(url: kUrl1),
+        PlayerWidget(url: kUrl3),
         Text(
           'Sample 2 ($kUrl2)',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -62,7 +65,7 @@ class _ExampleAppState extends State<ExampleApp> {
           'Sample 3 ($kUrl3)',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        PlayerWidget(url: kUrl3),
+        PlayerWidget(url: kUrl3,),
         Text(
           'Sample 4 (Low Latency mode) ($kUrl1)',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -208,7 +211,7 @@ class _AdvancedState extends State<Advanced> {
   @override
   Widget build(BuildContext context) {
     final audioPosition = Provider.of<Duration>(context);
-    kUrl3headers.putIfAbsent("Range", () => "bytes=50000-100000");
+    kUrl3headers.putIfAbsent("Range", () => "bytes=2000-3000");
     return _tab(
       children: [
         Column(children: [
@@ -219,10 +222,12 @@ class _AdvancedState extends State<Advanced> {
                 onPressed: () => widget.advancedPlayer.setUrl(kUrl1)),
             _btn(
                 txt: 'Audio 2',
-                onPressed: () => widget.advancedPlayer.setUrl(kUrl2)),
+                onPressed: () => widget.advancedPlayer.setUrl(kUrl3)),
             _btn(
                 txt: 'Stream',
-                onPressed: () => widget.advancedPlayer.setUrlWithHeaders(kUrl3, headers: kUrl3headers)),
+                //onPressed: () => widget.advancedPlayer.setUrl(kUrl3)),
+                onPressed: () => widget.advancedPlayer
+                    .setUrlWithHeaders(kUrl3, headers: kUrl3headers)),
           ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
         ]),
         Column(children: [
