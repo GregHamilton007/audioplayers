@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:audioplayers/audio_cache.dart';
@@ -14,7 +15,8 @@ typedef void OnError(Exception exception);
 
 const kUrl1 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl2 = 'https://luan.xyz/files/audio/nasa_on_a_mission.mp3';
-const kUrl3 = 'http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1xtra_mf_p';
+const kUrl3 = 'http://traffic.libsyn.com/joeroganexp/p1380.mp3';
+HashMap<String,String> kUrl3headers = new HashMap<String,String>();
 
 void main() {
   runApp(new MaterialApp(home: new ExampleApp()));
@@ -206,6 +208,7 @@ class _AdvancedState extends State<Advanced> {
   @override
   Widget build(BuildContext context) {
     final audioPosition = Provider.of<Duration>(context);
+    kUrl3headers.putIfAbsent("Range", () => "bytes=50000-100000");
     return _tab(
       children: [
         Column(children: [
@@ -219,7 +222,7 @@ class _AdvancedState extends State<Advanced> {
                 onPressed: () => widget.advancedPlayer.setUrl(kUrl2)),
             _btn(
                 txt: 'Stream',
-                onPressed: () => widget.advancedPlayer.setUrl(kUrl3)),
+                onPressed: () => widget.advancedPlayer.setUrlWithHeaders(kUrl3, headers: kUrl3headers)),
           ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
         ]),
         Column(children: [

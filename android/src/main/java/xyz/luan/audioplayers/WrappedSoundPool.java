@@ -113,7 +113,8 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
     }
 
     @Override
-    void setUrlWithHeaders(final  Context context, final String url, final boolean isLocal, HashMap<String,String> headers) {
+    void setUrlWithHeaders(final Context context, final String url, final boolean isLocal,
+            HashMap<String, String> headers) {
         if (this.url != null && this.url.equals(url)) {
             return;
         }
@@ -134,8 +135,6 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
             }
         }).start();
     }
-
-
 
     @Override
     void setVolume(double volume) {
@@ -179,13 +178,10 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
 
     private static SoundPool createSoundPool() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes attrs = new AudioAttributes.Builder().setLegacyStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE)
-                    .setUsage(AudioAttributes.USAGE_GAME)
+            AudioAttributes attrs = new AudioAttributes.Builder()
+                    .setLegacyStreamType(AudioManager.USE_DEFAULT_STREAM_TYPE).setUsage(AudioAttributes.USAGE_GAME)
                     .build();
-            return new SoundPool.Builder()
-                    .setAudioAttributes(attrs)
-                    .setMaxStreams(100)
-                    .build();
+            return new SoundPool.Builder().setAudioAttributes(attrs).setMaxStreams(100).build();
         }
         return unsafeBuildLegacySoundPool();
     }
@@ -200,13 +196,7 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
             soundPool.resume(this.streamId);
             this.paused = false;
         } else {
-            this.streamId = soundPool.play(
-                    soundId,
-                    this.volume,
-                    this.volume,
-                    0,
-                    this.looping ? -1 : 0,
-                    1.0f);
+            this.streamId = soundPool.play(soundId, this.volume, this.volume, 0, this.looping ? -1 : 0, 1.0f);
         }
     }
 
@@ -227,7 +217,7 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
         return loadTempFileFromNetwork(url).getAbsolutePath();
     }
 
-    private String getAudioPathWithHeaders(String url, boolean isLocal, HashMap<String,String> headers) {
+    private String getAudioPathWithHeaders(String url, boolean isLocal, HashMap<String, String> headers) {
         if (isLocal) {
             return url;
         }
@@ -256,7 +246,7 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
         }
     }
 
-    private File loadTempFileFromNetwork(String url, HashMap<String,String> headers) {
+    private File loadTempFileFromNetwork(String url, HashMap<String, String> headers) {
         FileOutputStream fileOutputStream = null;
         try {
             byte[] bytes = downloadUrl(URI.create(url).toURL(), headers);
@@ -304,20 +294,16 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
         return outputStream.toByteArray();
     }
 
-    private byte[] downloadUrl(URL url, HashMap<String,String> headers) {
+    private byte[] downloadUrl(URL url, HashMap<String, String> headers) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         InputStream stream = null;
-        HttpsURLConnection urlHeaderConnection = HttpsURLConnection(url);
-        try{
-            urlHeaderConnection = urlHeaderConnection.openConnection();
-        }catch(Exception e){
-            System.out.println("failed to open connection");
-        }
-        for(HashMap.Entry<String,String> entry : headers.entrySet()) {
-            urlHeaderConnection.setRequestProperty(entry.getKey().toString(), entry.getValue().toString());
-        }
+        HttpsURLConnection urlHeaderConnection;
         try {
+            urlHeaderConnection = (HttpsURLConnection) url.openConnection();
+            for (HashMap.Entry<String, String> entry : headers.entrySet()) {
+                urlHeaderConnection.setRequestProperty(entry.getKey().toString(), entry.getValue().toString());
+            }
             byte[] chunk = new byte[4096];
             int bytesRead;
             stream = urlHeaderConnection.getInputStream();
@@ -325,14 +311,15 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
             while ((bytesRead = stream.read(chunk)) > 0) {
                 outputStream.write(chunk, 0, bytesRead);
             }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            System.out.println("failed to open connection");
         } finally {
-            try {
-                stream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 

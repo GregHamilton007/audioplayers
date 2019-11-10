@@ -474,7 +474,7 @@ class AudioPlayer {
 
   Future<int> setUrlWithHeaders(String url,
       {bool isLocal: false, bool respectSilence = false, Map<String,String> headers} ) {
-    return _invokeMethod('setUrl',
+    return _invokeMethod('setUrlWithHeaders',
         {'url': url, 'isLocal': isLocal, 'respectSilence': respectSilence, 'headers': headers});
   }
 
