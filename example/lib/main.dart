@@ -15,7 +15,7 @@ typedef void OnError(Exception exception);
 
 const kUrl1 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl2 = 'https://luan.xyz/files/audio/nasa_on_a_mission.mp3';
-const kUrl3 = 'http://traffic.libsyn.com/billmaher/Overtime_514.mp3';
+const kUrl3 = 'https://hwcdn.libsyn.com/p/6/0/d/60d4e06d29cda33f/PaleoSolution-444.mp3?c_id=56406722&cs_id=56406722&expiration=1573414716&hwt=42aa5dfc54d63c3450fb5bee02454efd';
 //const kUrl3 = 'https://dts.podtrac.com/redirect.mp3/rss.art19.com/episodes/2d05379b-562b-4417-b407-e4e51ad56ffe.mp3';
 
 HashMap<String, String> kUrl3headers = new HashMap<String, String>();
@@ -55,7 +55,7 @@ class _ExampleAppState extends State<ExampleApp> {
           'Sample 1 ($kUrl3)',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        PlayerWidget(url: kUrl3),
+        PlayerWidget(url: kUrl3, headers: kUrl3headers,),
         Text(
           'Sample 2 ($kUrl2)',
           style: TextStyle(fontWeight: FontWeight.bold),
