@@ -368,7 +368,7 @@ class AudioPlayer {
     volume ??= 1.0;
     respectSilence ??= false;
     stayAwake ??= false;
-
+    debugPrint("DebugZ - Invoking method playWithHeaders.");
     final int result = await _invokeMethod('playWithHeaders', {
       'url': url,
       'isLocal': isLocal,

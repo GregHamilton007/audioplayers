@@ -91,6 +91,7 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
 
     @Override
     void setUrl(final String url, final boolean isLocal) {
+        System.out.println("DEBUG ZAMEER TEST 3");
         if (this.url != null && this.url.equals(url)) {
             return;
         }
@@ -114,7 +115,8 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
 
     @Override
     void setUrlWithHeaders(final Context context, final String url, final boolean isLocal,
-            HashMap<String, String> headers) {
+            final HashMap<String, String> headers) {
+                System.out.println("DEBUG ZAMEER TEST 2");
         if (this.url != null && this.url.equals(url)) {
             return;
         }
@@ -131,7 +133,7 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
         new Thread(new Runnable() {
             @Override
             public void run() {
-                self.soundId = soundPool.load(getAudioPath(url, isLocal), 1);
+                self.soundId = soundPool.load(getAudioPathWithHeaders(url, isLocal, headers), 1);
             }
         }).start();
     }
@@ -296,7 +298,7 @@ public class WrappedSoundPool extends Player implements SoundPool.OnLoadComplete
 
     private byte[] downloadUrl(URL url, HashMap<String, String> headers) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
+        System.out.println("DEBUG ZAMEER TEST 1");
         InputStream stream = null;
         HttpsURLConnection urlHeaderConnection;
         try {

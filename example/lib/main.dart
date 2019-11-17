@@ -15,7 +15,9 @@ typedef void OnError(Exception exception);
 
 const kUrl1 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl2 = 'https://luan.xyz/files/audio/nasa_on_a_mission.mp3';
-const kUrl3 = 'https://hwcdn.libsyn.com/p/6/0/d/60d4e06d29cda33f/PaleoSolution-444.mp3?c_id=56406722&cs_id=56406722&expiration=1573414716&hwt=42aa5dfc54d63c3450fb5bee02454efd';
+//const kUrl3 = 'https://en9cghv86hxov.x.pipedream.net';
+const kUrl3 = 'https://hwcdn.libsyn.com/p/8/1/3/813a6dbc867a2e77/p1386.mp3?c_id=57551594&cs_id=57551594&expiration=1574030496&hwt=8d8291c988c8af5f1069740c3bc62dcf';
+// const kUrl3 = 'https://hwcdn.libsyn.com/p/6/0/d/60d4e06d29cda33f/PaleoSolution-444.mp3?c_id=56406722&cs_id=56406722&expiration=1573414716&hwt=42aa5dfc54d63c3450fb5bee02454efd';
 //const kUrl3 = 'https://dts.podtrac.com/redirect.mp3/rss.art19.com/episodes/2d05379b-562b-4417-b407-e4e51ad56ffe.mp3';
 
 HashMap<String, String> kUrl3headers = new HashMap<String, String>();
@@ -48,7 +50,8 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   Widget remoteUrl() {
-    kUrl3headers.putIfAbsent("Range", () => "bytes=2000-3000");
+    kUrl3headers.putIfAbsent("Range", () => "bytes=2000000-3000000");
+    debugPrint("DebugZ - Building remoteUrl widget.");
     return SingleChildScrollView(
       child: _tab(children: [
         Text(

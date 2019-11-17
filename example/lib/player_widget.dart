@@ -192,6 +192,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         : null;
     int result = null;
     if (headers != null) {
+      debugPrint("DebugZ - playing with headers");
       result = await _audioPlayer.playWithHeaders(url,
           isLocal: isLocal, position: playPosition, headers: headers);
     } else {
